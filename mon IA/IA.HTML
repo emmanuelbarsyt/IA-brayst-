@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> BRAYST IA</title>
+
+    <!-- Lien vers le fichier CSS pour appliquer le style -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+    <!-- Écran de chargement affiché au début -->
+    <div id="loading-screen">
+        <img src="AI.JPG" alt="Logo" class="loading-logo">
+        <p class="loading-text">Bienvenue jeunes à l'avenir prometteur....</p>
+    </div>
+
+    <!-- Partie gauche de la mise en page -->
+    <div id="gauche"> <p></p></div>
+    
+    <!-- Partie centrale contenant le chatbot -->
+    <div id="centre">
+        <div>
+            <!-- Logo du chatbot -->
+            <img class="logo" src="AI.JPG" width="150px" height="150px">
+            
+            <!-- Titre du chatbot -->
+            <h1 class="titre"><i> BRAYST</i></h1>
+        </div>
+
+        <!-- Menu (peut être utilisé pour la navigation plus tard) -->
+        <div id="menu"><br><br><br></div>
+
+        <!-- Conteneur principal du chatbot -->
+        <div id="corps">
+            <center>
+                <!-- Boîte où s'affichent les messages du chat -->
+                <div id="chatbox" class="chatbox"></div>
+                
+                <!-- Champ de saisie pour l'utilisateur -->
+                <input type="text" id="userInput" class="input-text" placeholder="Tapez votre message ici..." onkeyup="autoComplete()"/>
+
+                <!-- Affichage des suggestions pour la saisie automatique -->
+                <div id="suggestions" class="suggestions"></div>
+
+                <!-- Bouton pour envoyer le message -->
+                <button class="send-button" onclick="sendMessage()">Envoyer</button>
+            </center>
+        </div>
+
+        <!-- Pied de page contenant le copyright -->
+        <center>
+            <div id="pied">
+                <p class="copyright">
+                    <h1>Copyright© 2025gwet brayst, segolene</h1>
+                </p>
+            </div>
+        </center>
+    </div>
+
+    <!-- Partie droite de la mise en page -->
+    <div id="droite"><p></p></div> 
+
+    <script>
+    // Base de connaissances du chatbot (questions et réponses)
+    const knowledgeBase = {
+        "salut": "Bonjour ! Comment puis-je t'aider aujourd'hui ?",
+        "comment tu t'apapelles ?": "🤔Je suis Chatbot Amélioré, prêt à répondre à tes questions😃 !",
+        "qu'est-ce qu'un algorithme ?": "Un algorithme est une suite d'instructions permettant de résoudre un problème étape par étape.",
+        "quelle est la différence entre une variable et une constante ?": "Une variable peut changer de valeur pendant l'exécution du programme, alors qu'une constante conserve la même valeur.",
+        "comment fonctionne une structure conditionnelle ?": "Une structure conditionnelle permet d'exécuter différentes instructions en fonction d'une condition, comme if-else en programmation.",
+        "qu'est-ce qu'une boucle ?": "Une boucle est une structure répétitive permettant d'exécuter un bloc de code plusieurs fois selon une condition donnée.",
+        "qu'est-ce qu'une fonction en programmation ?": "Une fonction est un bloc de code réutilisable qui effectue une tâche spécifique.",
+        "quelle est la différence entre un langage compilé et un langage interprété ?": "Un langage compilé est traduit en code machine avant exécution, tandis qu'un langage interprété est traduit ligne par ligne pendant l'exécution.",
+        "quelles sont les étapes de la maintenance informatique ?": "Les étapes incluent l'analyse du problème, le diagnostic, la réparation et la vérification du bon fonctionnement.",
+        "quelle est la différence entre un disque dur HDD et un SSD ?": "Un SSD est plus rapide et plus résistant qu'un HDD, qui utilise des disques magnétiques rotatifs.",
+        "qu'est-ce qu'une adresse IP ?": "Une adresse IP est une identification unique d'un appareil sur un réseau.",
+        "quelle est la différence entre TCP et UDP ?": "TCP assure une transmission fiable avec vérification des paquets, tandis qu'UDP est plus rapide mais sans garantie de réception.",
+        "qu'est-ce qu'un pare-feu ?": "Un pare-feu est un dispositif de sécurité qui contrôle le trafic réseau entrantet sortant pour protéger un système.",
+        "tu as un sport que tu aime ?" :" merci pour la question  moi j'aime bien le basket-ball🏀👌. et vous  ",
+        "idem pour moi ." :"alors nous somme 🤞🧐"
+        
+
+
+    };
+       
+    
+
+    // Fonction pour corriger les fautes de frappe courantes
+    function correctSpelling(input) {
+        // Liste des fautes courantes et corrections
+        const corrections = {
+            "coment": "comment",
+            "tu t'appel": "tu t'appelles",
+            "cest": "c'est",
+        };
+
+        // Conversion en minuscule et correction des fautes
+        let correctedInput = input.toLowerCase();
+        for (let mistake in corrections) {
+            correctedInput = correctedInput.replace(new RegExp(mistake, 'g'), corrections[mistake]);
+        }
+        return correctedInput;
+    }
+
+    // Fonction pour afficher les suggestions d'auto-complétion
+    function autoComplete() {
+        const input = document.getElementById("userInput").value.toLowerCase();
+        const suggestionsDiv = document.getElementById("suggestions");
+        suggestionsDiv.innerHTML = "";
+        
+        if (input.length === 0) return;
+        
+        // Filtrage des suggestions
+        const suggestions = Object.keys(knowledgeBase).filter(question => question.startsWith(input));
+        
+        // Affichage des suggestions dans la liste
+        suggestions.forEach(suggestion => {
+            const suggestionItem = document.createElement("div");
+            suggestionItem.className = "suggestion-item";
+            suggestionItem.innerText = suggestion;
+            suggestionItem.onclick = function() {
+                document.getElementById("userInput").value = suggestion;
+                suggestionsDiv.innerHTML = "";
+            };
+            suggestionsDiv.appendChild(suggestionItem);
+        });
+    }
+
+    // Fonction pour envoyer un message au chatbot
+    function sendMessage() {
+        const input = document.getElementById("userInput");
+        const chatbox = document.getElementById("chatbox");
+        let userMessage = input.value.trim();
+        if (userMessage === "") return;
+
+        userMessage = correctSpelling(userMessage);
+        const userHtml = `<div class='message user-message'>${userMessage}</div>`;
+        chatbox.innerHTML += userHtml;
+
+        // Réponse du chatbot
+        const botResponse = knowledgeBase[userMessage] || "Je ne connais pas encore cette réponse.";
+        const botHtml = `<div class='message bot-message'>${botResponse}</div>`;
+        
+        setTimeout(() => {
+            chatbox.innerHTML += botHtml;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }, 500);
+
+        input.value = "";
+        document.getElementById("suggestions").innerHTML = "";
+    }
+
+    // Animation de l'écran de chargement
+    window.onload = function() {
+        setTimeout(() => {
+            document.getElementById("loading-screen").style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById("loading-screen").style.display = "none";
+                document.body.innerHTML += "<h2 class='welcome-message'></h2>";
+            }, 1000);
+        }, 3000);
+    };
+    </script>
+</body>
+</html>
